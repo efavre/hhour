@@ -5,7 +5,9 @@ Rails.application.routes.draw do
 
   resources :users
 
-  resources :picture_threads
+  resources :picture_threads do 
+    resources :pictures
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
