@@ -6,10 +6,4 @@ class User < ActiveRecord::Base
 	def display_name 
 		first_name
 	end
-
-	def to_builder
-    	Jbuilder.new do |user|
-      		user.(self, :first_name)
-    	end
-  	end
 end
