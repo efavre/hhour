@@ -19,10 +19,5 @@ class PicturesController < ApplicationController
 		end
 		render action: :index
 	end
-
-	private
-
-	def picture_params
-		params.require(:picture).permit(:url, :author)
-	end
+	
 end
