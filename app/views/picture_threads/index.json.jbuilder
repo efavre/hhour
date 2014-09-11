@@ -6,7 +6,7 @@ json.picture_threads @picture_threads do |picture_thread|
   if picture_thread.pictures.count > 0
     json.original_picture do
       json.web_id picture_thread.pictures.first.id.to_s
-  	  json.url picture_thread.pictures.first.url
+  	  json.url picture_thread.pictures.first.get_as3_url
       json.file_key picture_thread.pictures.first.file_key
   	  json.publication_date picture_thread.pictures.first.created_at.to_s
   	  json.author picture_thread.pictures.first.author.display_name
