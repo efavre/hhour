@@ -70,7 +70,6 @@ ActiveRecord::Schema.define(version: 20140911100958) do
     t.integer  "picture_thread_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.string   "fileKey"
     t.string   "file_key"
   end
 
