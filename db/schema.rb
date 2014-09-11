@@ -71,6 +71,7 @@ ActiveRecord::Schema.define(version: 20140911100958) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "fileKey"
+    t.string   "file_key"
   end
 
   create_table "users", force: true do |t|
