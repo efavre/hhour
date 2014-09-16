@@ -11,7 +11,7 @@ class PictureThreadsController < ApplicationController
 		if params[:picture_thread][:author]
 			author = User.find_or_create_by(first_name: params[:picture_thread][:author])
 			picture_thread = PictureThread.create(title: params[:picture_thread][:title], author: author)
-			picture_thread.pictures.create(file_key: params[:picture_thread][:picture][:file_key], author: author)
+			picture_thread.pictures.create(file_key: params[:picture_thread][:picture]	[:file_key], author: author)
 		end
 		render action: :index
 	end
