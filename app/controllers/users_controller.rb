@@ -5,7 +5,7 @@ class UsersController < ApplicationController
 	def create
 		user = User.find_or_create_by(first_name: params[:user][:first_name])
 		if user
-			Device.create(:token => params[:user][:token], :user => user)
+			Device.find_or_create_by(:token => params[:user][:token], :user => user)
 		end
 		render action: :index
 	end
