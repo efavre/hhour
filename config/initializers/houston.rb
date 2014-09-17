@@ -1,2 +1,2 @@
-# APN = Houston::Client.development
-# APN.certificate = File.read("/path/to/apple_push_notification.pem")
+APN = Houston::Client.production
+APN.certificate = File.read("#{RAILS_ROOT}/config/apple_push_notification.pem")
