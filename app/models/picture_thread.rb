@@ -6,13 +6,16 @@ class PictureThread < ActiveRecord::Base
 	after_create :notify
 
 	def notify
-		notifications = []
-		Device.all.each do |device|
-			notification = Houston::Notification.new(device: device.token)
-			notification.alert = "Un nouveau challenge ! #{self.title}"
-			notification.badge = 1
-			notifications << notification
+		if Rails.env == "production"
+
+			notifications = []
+			Device.all.each do |device|
+				notification = Houston::Notification.new(device: device.token)
+				notification.alert = "Un nouveau challenge ! #{self.title}"
+				notification.badge = 1
+				notifications << notification
+			end
+			APN.push(notifications)
 		end
-		APN.push(notifications)
 	end
 end

@@ -4,7 +4,12 @@ class PicturesController < ApplicationController
 	
 	def index
 		if params[:picture_thread_id]
-			@picture_thread = PictureThread.find(params[:picture_thread_id])
+			picture_thread = PictureThread.find(params[:picture_thread_id])
+			@pictures = picture_thread.pictures
+			if params[:later_than]
+				later_than_date = params[:later_than].to_datetime
+				@pictures = picture_thread.pictures.where("created_at > ?",later_than_date)
+			end
 		end
 	end
 

@@ -4,6 +4,10 @@ class PictureThreadsController < ApplicationController
 
 	def index
 		@picture_threads = PictureThread.all
+		if params[:later_than]
+			later_than_date = params[:later_than].to_datetime
+			@picture_threads = PictureThread.where("created_at > ?", later_than_date)
+		end
 		# render json: @picture_threads.to_json({:only => :title, :include => [{:pictures => {:only => :url}}, {:author => {:only => :first_name}}]})
 	end
 
