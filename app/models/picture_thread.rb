@@ -3,11 +3,14 @@ class PictureThread < ActiveRecord::Base
 	belongs_to :author, class_name: "User"
 	has_and_belongs_to_many :users
 
-	after_create :notify
+	after_create :notify, :set_closing_date
+
+	def set_closing_date
+		self.closing_date = self.created_at + 1.hour
+	end
 
 	def notify
 		if Rails.env == "production"
-
 			notifications = []
 			Device.all.each do |device|
 				notification = Houston::Notification.new(device: device.token)
