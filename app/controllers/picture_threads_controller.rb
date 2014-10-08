@@ -11,12 +11,14 @@ class PictureThreadsController < ApplicationController
 	end
 
 	def create
-		if params[:picture_thread][:author]
+		if params[:picture_thread][:author] && params[:picture_thread][:title] && params[:picture_thread][:picture][:file_key]
 			author = User.find_or_create_by(first_name: params[:picture_thread][:author])
 			picture_thread = PictureThread.create(title: params[:picture_thread][:title], author: author)
 			picture_thread.pictures.create(file_key: params[:picture_thread][:picture][:file_key], author: author)
+			render action: :index
+		else
+			render :json => { :errors => "Missing inputs to create picture thread" }, :status => 400
 		end
-		render action: :index
 	end
 
 end

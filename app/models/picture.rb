@@ -4,7 +4,9 @@ class Picture < ActiveRecord::Base
 	belongs_to :picture_thread
 	after_create :notify
 	validate :created_before_picture_thread_closing_date, :author_only_submit_once
-	
+	validates :file_key, presence: true
+	validates :author, presence: true
+
 	def created_before_picture_thread_closing_date
 		if  self.picture_thread.closing_date == nil || self.picture_thread.closing_date < Time.now
 			errors.add(:created_at, "passed thread closing date")

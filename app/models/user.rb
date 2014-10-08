@@ -1,7 +1,10 @@
 class User < ActiveRecord::Base
+	
 	has_many :pictures, foreign_key: "author_id"
 	has_many :own_picture_threads, class_name: "PictureThread", foreign_key: "author_id"
 	has_and_belongs_to_many :picture_threads
+
+	validates :first_name, presence: true
 
 	def display_name 
 		first_name
