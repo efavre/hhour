@@ -13,7 +13,7 @@ class Picture < ActiveRecord::Base
 
 	def author_only_submit_once
 		self.picture_thread.pictures.each do |picture|
-			if picture.author == self.author
+			if self != picture && picture.author == self.author
 				errors.add(:author, "already submitted a picture")
 			end
 		end
