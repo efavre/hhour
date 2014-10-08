@@ -20,9 +20,9 @@ class PicturesController < ApplicationController
 			if params[:picture][:author]
 				author = User.find_or_create_by(first_name: params[:picture][:author])
 				@picture_thread.pictures.create(file_key: params[:picture][:file_key], author: author)
+				render action: :index
 			end
 		end
-		render action: :index
 	end
 	
 end
