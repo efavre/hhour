@@ -1,7 +1,15 @@
 class Picture < ActiveRecord::Base
+
 	belongs_to :author, class_name: "User"
 	belongs_to :picture_thread
 	after_create :notify
+	validate :created_before_picture_thread_closing_date
+	
+	def created_before_picture_thread_closing_date
+		if  self.picture_thread.closing_date == nil || self.picture_thread.closing_date < Time.now
+			errors.add(:created_at, "passed thread closing date")
+		end
+	end
 
 	def notify
 		if Rails.env == "production"
