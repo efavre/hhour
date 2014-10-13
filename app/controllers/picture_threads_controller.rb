@@ -11,9 +11,11 @@ class PictureThreadsController < ApplicationController
 	end
 
 	def create
-		if params[:picture_thread][:author] && params[:picture_thread][:title] && params[:picture_thread][:picture][:file_key]
+		if params[:picture_thread][:author] && params[:picture_thread][:title] && params[:picture_thread][:lasting_time] && params[:picture_thread][:picture][:file_key]
 			author = User.find_or_create_by(first_name: params[:picture_thread][:author])
-			picture_thread = PictureThread.create(title: params[:picture_thread][:title], author: author)
+			picture_thread = PictureThread.new(title: params[:picture_thread][:title], author: author)
+			picture_thread.set_closing_date(params[:picture_thread][:lasting_time])
+			picture_thread.save
 			picture_thread.pictures.create(file_key: params[:picture_thread][:picture][:file_key], author: author)
 			render action: :index
 		else
