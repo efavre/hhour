@@ -55,10 +55,10 @@ ActiveRecord::Schema.define(version: 20140916074845) do
 
   create_table "picture_threads", force: true do |t|
     t.string   "title"
-    t.datetime "closing_date"
     t.integer  "author_id"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.datetime "closing_date"
   end
 
   create_table "picture_threads_users", force: true do |t|

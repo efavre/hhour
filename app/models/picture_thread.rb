@@ -4,15 +4,15 @@ class PictureThread < ActiveRecord::Base
 	belongs_to :author, class_name: "User"
 	has_and_belongs_to_many :users
 	
-	after_create :notify
+	after_create :notify, :set_closing_date
 
 	validates :title, presence: true
 	validates :author, presence: true
 
-	def set_closing_date lasting_time
-		if lasting_time == "h"
+	def set_closing_date
+		if self.lasting_time_type == "h"
 			self.closing_date = Time.now + 60.hours
-		elsif lasting_time == "s"
+		elsif lasting_time_type == "s"
 			self.closing_date = Time.now + 60.seconds
 		else
 			self.closing_date = Time.now + 60.minutes
