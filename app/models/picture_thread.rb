@@ -4,18 +4,19 @@ class PictureThread < ActiveRecord::Base
 	belongs_to :author, class_name: "User"
 	has_and_belongs_to_many :users
 	
-	after_create :notify, :set_closing_date
+	after_create :set_closing_date, :notify
 
 	validates :title, presence: true
 	validates :author, presence: true
 
+
 	def set_closing_date
 		if self.is_hour_challenge?
-			self.closing_date = self.created_at + 60.hours
-		elsif self.is_second_challenge
-			self.closing_date = self.created_at + 60.seconds
+			self.update_attribute(:closing_date, self.created_at + 60.hours)
+		elsif self.is_second_challenge?
+			self.update_attribute(:closing_date, self.created_at + 60.seconds)
 		else
-			self.closing_date = self.created_at + 60.minutes
+			self.update_attribute(:closing_date, self.created_at + 60.minutes)
 		end
 	end
 
