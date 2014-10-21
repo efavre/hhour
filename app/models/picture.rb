@@ -23,10 +23,11 @@ class Picture < ActiveRecord::Base
 
 	def notify
 		if Rails.env == "production"
+			message = "#{self.author} a répondu au challenge #{self.picture_thread.title}"
 			notifications = []
 			Device.all.each do |device|
 				notification = Houston::Notification.new(device: device.token)
-				notification.alert = "Une nouvelle réponse au challenge #{self.picture_thread.title}"
+				notification.alert = message
 				notification.badge = 1
 				notifications << notification
 			end

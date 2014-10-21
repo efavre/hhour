@@ -9,7 +9,6 @@ class PictureThread < ActiveRecord::Base
 	validates :title, presence: true
 	validates :author, presence: true
 
-
 	def set_closing_date
 		if self.is_hour_challenge?
 			self.update_attribute(:closing_date, self.created_at + 60.hours)
@@ -21,16 +20,17 @@ class PictureThread < ActiveRecord::Base
 	end
 
 	def notify
-		message = "Vous avez 60 heures pour repondre au defi #{self.title}."
+		message = "Vous avez 60 heures pour repondre au défi de #{self.author} : #{self.title}."
 		if self.is_second_challenge?
-			message = "Vite ! Une minute pour le challenge #{self.title} !"
+			message = "Vite ! Une minute pour répondre au défi de #{self.author} : #{self.title} !"
 		elsif self.is_minute_challenge?
-			message = "#{self.title} ! On ramasse les copies dans une heure." 
+			message = "#{self.author} vous lance le défi #{self.title} ! On ramasse les copies dans une heure." 
 		end
 		if Rails.env == "production"
 			notifications = []
 			Device.all.each do |device|
 				notification = Houston::Notification.new(device: device.token)
+				notification.sound = 'default'
 				notification.alert = message
 				notification.badge = 1
 				notifications << notification
