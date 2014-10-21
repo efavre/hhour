@@ -20,11 +20,11 @@ class PictureThread < ActiveRecord::Base
 	end
 
 	def notify
-		message = "Vous avez 60 heures pour repondre au défi de #{self.author} : #{self.title}."
+		message = "Vous avez 60 heures pour repondre au défi de #{self.author.display_name} : #{self.title}."
 		if self.is_second_challenge?
-			message = "Vite ! Une minute pour répondre au défi de #{self.author} : #{self.title} !"
+			message = "Vite ! Une minute pour répondre au défi de #{self.author.display_name} : #{self.title} !"
 		elsif self.is_minute_challenge?
-			message = "#{self.author} vous lance le défi #{self.title} ! On ramasse les copies dans une heure." 
+			message = "#{self.author.display_name} vous lance le défi #{self.title} ! On ramasse les copies dans une heure." 
 		end
 		if Rails.env == "production"
 			notifications = []
