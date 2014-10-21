@@ -3,7 +3,7 @@ class PictureThreadsController < ApplicationController
 	protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
 
 	def index
-		@picture_threads = PictureThread.all.order("closing_date DESC")
+		@picture_threads = PictureThread.all.order("closing_date DESC").limit(15)
 		if params[:later_than]
 			later_than_date = params[:later_than].to_datetime
 			@picture_threads = PictureThread.where("created_at > ?", later_than_date)

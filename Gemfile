@@ -15,6 +15,7 @@ gem 'devise'
 gem 'activeadmin', github: 'activeadmin'
 gem 'aws-sdk'
 gem 'houston'
+gem 'acts_as_commentable'
 
 # DEVELOPMENT
 

@@ -1,5 +1,7 @@
 class Picture < ActiveRecord::Base
 
+	acts_as_commentable
+
 	belongs_to :author, class_name: "User"
 	belongs_to :picture_thread
 	after_create :notify
