@@ -3,14 +3,20 @@ class CommentsController < ApplicationController
 	protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
 
 	def create
-		@picture = Picture.find(params[:picture_id])
-		comment = @picture.comments.create
-		comment.title = params[:comment][:title]
-		comment.comment = params[:comment][:comment]
-		if comment.save
-			render action: :index
+		if params[:comment]
+			author = User.find_or_create_by(first_name: params[:picture][:author])
+			@picture = Picture.find(params[:picture_id])
+			comment = @picture.comments.create
+			comment.title = params[:comment][:title]
+			comment.comment = params[:comment][:comment]
+			comment.user = author
+			if comment.save
+				render action: :index
+			else
+				render :json => { :errors => comment.errors.full_messages }, :status => 403
+			end
 		else
-			render :json => { :errors => comment.errors.full_messages }, :status => 403
+			render :json => { :errors => "Missing inputs to create comment" }, :status => 400
 		end
 	end
 
