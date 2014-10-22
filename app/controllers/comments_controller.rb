@@ -6,7 +6,7 @@ class CommentsController < ApplicationController
 		if params[:comment]
 			author = User.find_or_create_by(first_name: params[:comment][:user])
 			@picture = Picture.find(params[:picture_id])
-			comment = @picture.comments.create
+			comment = @picture.comments.build
 			comment.title = params[:comment][:title]
 			comment.comment = params[:comment][:content]
 			comment.user = author
