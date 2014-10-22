@@ -4,7 +4,7 @@ class CommentsController < ApplicationController
 
 	def create
 		if params[:comment]
-			author = User.find_or_create_by(first_name: params[:picture][:user])
+			author = User.find_or_create_by(first_name: params[:comment][:user])
 			@picture = Picture.find(params[:picture_id])
 			comment = @picture.comments.create
 			comment.title = params[:comment][:title]
