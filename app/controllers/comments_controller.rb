@@ -8,7 +8,7 @@ class CommentsController < ApplicationController
 			@picture = Picture.find(params[:picture_id])
 			comment = @picture.comments.create
 			comment.title = params[:comment][:title]
-			comment.comment = params[:comment][:comment]
+			comment.comment = params[:comment][:content]
 			comment.user = author
 			if comment.save
 				render action: :index
