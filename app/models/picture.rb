@@ -4,10 +4,14 @@ class Picture < ActiveRecord::Base
 
 	belongs_to :author, class_name: "User"
 	belongs_to :picture_thread
-	after_create :notify
+	after_create :notify_other_challengers
 	validate :created_before_picture_thread_closing_date, :author_only_submit_once
 	validates :file_key, presence: true
 	validates :author, presence: true
+
+	def commenters
+		self.comments.map{|c| c.user}.uniq
+	end
 
 	def created_before_picture_thread_closing_date
 		if  self.picture_thread.closing_date == nil || self.picture_thread.closing_date < Time.now
@@ -23,7 +27,7 @@ class Picture < ActiveRecord::Base
 		end
 	end
 
-	def notify
+	def notify_other_challengers
 		if Rails.env == "production"
 			message = "#{self.author.display_name} a répondu au challenge #{self.picture_thread.title}"
 			notifications = []
