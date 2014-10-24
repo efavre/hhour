@@ -42,7 +42,7 @@ class Picture < ActiveRecord::Base
 	end
 
 	def get_as3_url
-		S3_BUCKET.objects[file_key].url_for(:read).to_s
+		S3_BUCKET.objects[file_key].url_for(:read, { :expires => 1.month.from_now, :secure => true }).to_s
 	end
 
 end
