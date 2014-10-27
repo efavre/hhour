@@ -4,4 +4,5 @@ json.pictures @pictures do |picture|
   json.url picture.get_as3_url
   json.publication_date picture.created_at.to_s
   json.author picture.author.display_name
+  json.comments_count picture.comments.count
 end
