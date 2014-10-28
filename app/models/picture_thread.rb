@@ -24,17 +24,7 @@ class PictureThread < ActiveRecord::Base
 		elsif self.is_minute_challenge?
 			message = "#{self.author.display_name} vous lance le défi #{self.title} ! On ramasse les copies dans une heure." 
 		end
-		if Rails.env == "production"
-			notifications = []
-			Device.all.each do |device|
-				notification = Houston::Notification.new(device: device.token)
-				notification.sound = 'default'
-				notification.alert = message
-				notification.badge = 1
-				notifications << notification
-			end
-			APN.push(notifications)
-		end
+		PushNotification.notify_message_to_devices(message, Device.all)
 	end
 
 	def is_hour_challenge?

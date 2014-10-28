@@ -28,17 +28,8 @@ class Picture < ActiveRecord::Base
 	end
 
 	def notify_other_challengers
-		if Rails.env == "production"
-			message = "#{self.author.display_name} a répondu au challenge #{self.picture_thread.title}"
-			notifications = []
-			Device.all.each do |device|
-				notification = Houston::Notification.new(device: device.token)
-				notification.alert = message
-				notification.badge = 1
-				notifications << notification
-			end
-			APN.push(notifications)
-		end
+		message = "#{self.author.display_name} a répondu au challenge #{self.picture_thread.title}"
+		PushNotification.notify_message_to_devices(message, Device.all)
 	end
 
 	def get_as3_url

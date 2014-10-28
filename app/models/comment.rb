@@ -9,35 +9,15 @@ class Comment < ActiveRecord::Base
 	after_create :notify_picture_author, :notify_other_commenters
 
 	def notify_picture_author
-  		if Rails.env == "production" && self.commentable.author.devices.any?
-			message = "#{self.user.display_name} a commenté votre réponse au challenge #{self.commentable.picture_thread.title}"
-			notifications = []
-			self.commentable.author.devices.each do |device|
-				notification = Houston::Notification.new(device: device.token)
-				notification.alert = message
-				notification.badge = 1
-				notifications << notification
-			end
-			APN.push(notifications)
-		end
+		message = "#{self.user.display_name} a commenté votre réponse au challenge #{self.commentable.picture_thread.title}"
+		PushNotification.notify_message_to_devices(message, self.commentable.author.devices)
   	end
   
 	def notify_other_commenters
-  		if Rails.env == "production"
-  			message = "Un nouveau commentaire sur la réponse de #{self.commentable.author.display_name} au challenge #{self.commentable.picture_thread.title}"
-	  		notifications = []
-	  		self.commentable.commenters.each do |commenter|
-	  			if commenter && commenter != self.user && commenter != self.commentable.author
-	  	  			commenter.devices.each do |device|
-	  	  				notification = Houston::Notification.new(device: device.token)
-		    			notification.alert = message
-		    			notification.badge = 1
-		    			notifications << notification
-	  	  			end
-	  			end
-	  		end
-	  		APN.push(notifications)
-		end
+		message = "Un nouveau commentaire sur la réponse de #{self.commentable.author.display_name} au challenge #{self.commentable.picture_thread.title}"
+  		all_commenters = self.commentable.commenters
+  		all_commenters_but_self_and_picture_author = all_commenters.delete_if{|user| (user == self.user) || (user == self.commentable.author)}
+  		devices = all_commenters_but_self_and_picture_author.map{|user| user.devices}.flatten
+		PushNotification.notify_message_to_devices(message, devices)	  		
   	end
-
 end
