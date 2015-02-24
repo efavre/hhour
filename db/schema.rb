@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141021115024) do
+ActiveRecord::Schema.define(version: 20141110102908) do
 
   create_table "active_admin_comments", force: true do |t|
     t.string   "namespace"
@@ -100,6 +100,8 @@ ActiveRecord::Schema.define(version: 20141021115024) do
     t.string   "first_name"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "facebook_id"
+    t.string   "facebook_oauth_token"
   end
 
 end
