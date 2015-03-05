@@ -13,7 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20141110102908) do
 
-  create_table "active_admin_comments", force: true do |t|
+  create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace"
     t.text     "body"
     t.string   "resource_id",   null: false
@@ -28,7 +28,7 @@ ActiveRecord::Schema.define(version: 20141110102908) do
   add_index "active_admin_comments", ["namespace"], name: "index_active_admin_comments_on_namespace"
   add_index "active_admin_comments", ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
 
-  create_table "admin_users", force: true do |t|
+  create_table "admin_users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
     t.string   "reset_password_token"
@@ -46,7 +46,7 @@ ActiveRecord::Schema.define(version: 20141110102908) do
   add_index "admin_users", ["email"], name: "index_admin_users_on_email", unique: true
   add_index "admin_users", ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
 
-  create_table "comments", force: true do |t|
+  create_table "comments", force: :cascade do |t|
     t.string   "title",            limit: 50, default: ""
     t.text     "comment"
     t.integer  "commentable_id"
@@ -61,23 +61,23 @@ ActiveRecord::Schema.define(version: 20141110102908) do
   add_index "comments", ["commentable_type"], name: "index_comments_on_commentable_type"
   add_index "comments", ["user_id"], name: "index_comments_on_user_id"
 
-  create_table "devices", force: true do |t|
+  create_table "devices", force: :cascade do |t|
     t.string   "token"
     t.integer  "user_id"
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
-  create_table "picture_threads", force: true do |t|
+  create_table "picture_threads", force: :cascade do |t|
     t.string   "title"
+    t.datetime "closing_date"
     t.integer  "author_id"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.datetime "closing_date"
     t.string   "lasting_time_type", default: "m"
   end
 
-  create_table "picture_threads_users", force: true do |t|
+  create_table "picture_threads_users", force: :cascade do |t|
     t.integer  "picture_thread_id"
     t.integer  "user_id"
     t.datetime "created_at"
@@ -86,7 +86,7 @@ ActiveRecord::Schema.define(version: 20141110102908) do
 
   add_index "picture_threads_users", ["picture_thread_id", "user_id"], name: "index_picture_threads_users_on_picture_thread_id_and_user_id"
 
-  create_table "pictures", force: true do |t|
+  create_table "pictures", force: :cascade do |t|
     t.string   "url"
     t.datetime "publication_date"
     t.integer  "author_id"
@@ -96,7 +96,7 @@ ActiveRecord::Schema.define(version: 20141110102908) do
     t.string   "file_key"
   end
 
-  create_table "users", force: true do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "first_name"
     t.datetime "created_at"
     t.datetime "updated_at"

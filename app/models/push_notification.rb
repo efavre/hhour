@@ -4,10 +4,10 @@ class PushNotification < ActiveRecord::Base
   		if message && devices && Rails.env == "production"
 	  		notifications = []
   			devices.each do |device|
-	  		  	notification = Houston::Notification.new(device: device.token)
+	  		  notification = Houston::Notification.new(device: device.token)
 		    	notification.alert = message
 		   	 	notification.badge = 1
-				notification.sound = 'default'
+				  notification.sound = 'default'
 		    	notifications << notification
 	  		end
 	  		APN.push(notifications)
