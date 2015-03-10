@@ -8,26 +8,41 @@ RSpec.describe UsersController, type: :controller do
       it "returns 400" do
         post :create
         expect(response).to have_http_status(400)
+        expect(response.body).to match(/missing parameters/)
       end
     end
 
     context "with user parameter" do
-      it "returns to new session path" do
+      it "returns 400" do
         post :create, user: {}
-
         expect(response).to have_http_status(400)
+        expect(response.body).to match(/missing parameters/)
       end
     end
 
-    # context "without access tokens" do
-    #   it "redirects to new session path" do
+    context "with user parameter and facebook_id" do
+      it "returns 400" do
+        post :create, user: {facebook_id:"myFacebookId"}, format:"json"
+        expect(response).to have_http_status(400)
+        expect(response.body).to match(/missing parameters/)
+      end
+    end
 
-    #     get :index
-        
-    #     expect(response).to have_http_status(302)
-    #     expect(response).to redirect_to(new_session_path)
-    #   end
-    # end
+    context "with user parameter and first name" do
+      it "returns user" do
+        post :create, user: {first_name:"John"}, format:"json"
+        expect(response).to have_http_status(200)
+        expect(response.body).to match(/user created/)
+      end
+    end
+
+    context "with user parameter and first name and facebook_id" do
+      it "returns user" do
+        post :create, user: {first_name:"John", facebook_id:"myFacebookId"}, format:"json"
+        expect(response).to have_http_status(200)
+        expect(response.body).to match(/user created/)
+      end
+    end
 
   end
 
