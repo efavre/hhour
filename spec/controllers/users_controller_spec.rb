@@ -6,7 +6,7 @@ RSpec.describe UsersController, type: :controller do
 
     context "with no parameters" do
       it "returns 400" do
-        post :create
+        post :create, format:"json"
         expect(response).to have_http_status(400)
         expect(response.body).to match(/missing parameters/)
       end
@@ -14,7 +14,7 @@ RSpec.describe UsersController, type: :controller do
 
     context "with user parameter" do
       it "returns 400" do
-        post :create, user: {}
+        post :create, user: {}, format:"json"
         expect(response).to have_http_status(400)
         expect(response.body).to match(/missing parameters/)
       end

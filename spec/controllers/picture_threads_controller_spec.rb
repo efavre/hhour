@@ -56,21 +56,37 @@ RSpec.describe PictureThreadsController, type: :controller do
 
   describe "POST #create" do
 
-    # context "with no parameters" do
-    #   it "returns 400" do
-    #     post :create
-    #     expect(response).to have_http_status(400)
-    #     expect(response.body).to match(/missing parameters/)
-    #   end
-    # end
+    context "with no parameters" do
+      it "returns 400" do
+        post :create, format:"json"
+        expect(response).to have_http_status(400)
+        expect(response.body).to match(/missing parameters/)
+      end
+    end
 
-    # context "with user parameter" do
-    #   it "returns 400" do
-    #     post :create, user: {}
-    #     expect(response).to have_http_status(400)
-    #     expect(response.body).to match(/missing parameters/)
-    #   end
-    # end
+    context "with picture_thread parameter" do
+      it "returns 400" do
+        post :create, picture_thread: {}, format:"json"
+        expect(response).to have_http_status(400)
+        expect(response.body).to match(/missing parameters/)
+      end
+    end
+
+
+    context "with picture_thread full parameters" do
+      it "creates picture_thread" do
+        picture_thread_count = PictureThread.count
+        post :create, picture_thread: {author:"John",title:"My Challenging Challenge", lasting_time:"m", picture:{file_key:"filekey123"}}, format:"json"
+        expect(PictureThread.count).to eq(picture_thread_count + 1)
+      end
+    end
+
+    context "with picture_thread full parameters" do
+      it "returns 200" do
+        post :create, picture_thread: {author:"John",title:"My Challenging Challenge", lasting_time:"m", picture:{file_key:"filekey123"}}, format:"json"
+        expect(response).to have_http_status(201)
+      end
+    end
 
     # context "with user parameter and facebook_id" do
     #   it "returns 400" do
