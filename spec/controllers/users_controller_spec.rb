@@ -4,6 +4,14 @@ RSpec.describe UsersController, type: :controller do
 
   describe "POST #create" do
 
+    context "with html format" do
+      it "returns 400" do
+        post :create, format:"html"
+        expect(response).to have_http_status(406)
+        expect(response.body).to match(/format not acceptable/)
+      end
+    end
+
     context "with no parameters" do
       it "returns 400" do
         post :create, format:"json"

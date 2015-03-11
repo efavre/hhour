@@ -1,4 +1,4 @@
-class PictureThread < ActiveRecord::Base
+class Challenge < ActiveRecord::Base
 
 	has_many :pictures
 	belongs_to :author, class_name: "User"

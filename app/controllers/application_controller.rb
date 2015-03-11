@@ -7,7 +7,7 @@ class ApplicationController < ActionController::Base
   private
 
   def accept_json_only
-    render json: { message: "format not acceptable" }, status:406 unless request.format == "json"
+    render json: { message: "format not acceptable: #{request.format}" }, status:406 unless request.format == "json"
   end
 
 end

@@ -6,7 +6,7 @@ Rails.application.routes.draw do
 
   resources :users
 
-  resources :picture_threads do 
+  resources :challenges do 
     resources :pictures
   end
 

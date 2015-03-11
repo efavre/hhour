@@ -15,11 +15,11 @@ FactoryGirl.define do
 
   factory :picture do
     file_key "afilekey"
-    picture_thread
+    challenge
     author
   end
 
-  factory :picture_thread do
+  factory :challenge do
     title "My Challenge"
     lasting_time_type "s"
     author

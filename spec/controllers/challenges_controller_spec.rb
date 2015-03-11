@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe PicturesController, type: :controller do
+RSpec.describe ChallengesController, type: :controller do
 
   describe "GET #index" do
 

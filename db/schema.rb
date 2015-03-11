@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141110102908) do
+ActiveRecord::Schema.define(version: 20150310170006) do
 
   create_table "active_admin_comments", force: :cascade do |t|
     t.string   "namespace"
@@ -46,6 +46,24 @@ ActiveRecord::Schema.define(version: 20141110102908) do
   add_index "admin_users", ["email"], name: "index_admin_users_on_email", unique: true
   add_index "admin_users", ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
 
+  create_table "challenges", force: :cascade do |t|
+    t.string   "title"
+    t.datetime "closing_date"
+    t.integer  "author_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "lasting_time_type", default: "m"
+  end
+
+  create_table "challenges_users", force: :cascade do |t|
+    t.integer  "challenge_id"
+    t.integer  "user_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "challenges_users", ["challenge_id", "user_id"], name: "index_challenges_users_on_challenge_id_and_user_id"
+
   create_table "comments", force: :cascade do |t|
     t.string   "title",            limit: 50, default: ""
     t.text     "comment"
@@ -68,29 +86,11 @@ ActiveRecord::Schema.define(version: 20141110102908) do
     t.datetime "updated_at"
   end
 
-  create_table "picture_threads", force: :cascade do |t|
-    t.string   "title"
-    t.datetime "closing_date"
-    t.integer  "author_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.string   "lasting_time_type", default: "m"
-  end
-
-  create_table "picture_threads_users", force: :cascade do |t|
-    t.integer  "picture_thread_id"
-    t.integer  "user_id"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "picture_threads_users", ["picture_thread_id", "user_id"], name: "index_picture_threads_users_on_picture_thread_id_and_user_id"
-
   create_table "pictures", force: :cascade do |t|
     t.string   "url"
     t.datetime "publication_date"
     t.integer  "author_id"
-    t.integer  "picture_thread_id"
+    t.integer  "challenge_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file_key"

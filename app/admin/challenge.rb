@@ -1,4 +1,4 @@
-ActiveAdmin.register PictureThread do
+ActiveAdmin.register Challenge do
 
   permit_params :title, :closing_date, :author_id
 
