@@ -9,7 +9,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem 'devise'
 gem 'aws-sdk', '< 2.0'
 gem 'activeadmin', github: 'activeadmin'
-gem 'turbolink'
+gem 'turbolinks'
 gem 'houston'
 gem 'acts_as_commentable'
 
