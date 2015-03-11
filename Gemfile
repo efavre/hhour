@@ -21,6 +21,7 @@ group :test, :development do
 	gem 'spring'
   gem 'rspec-rails'
   gem "factory_girl_rails", "~> 4.0"
+  gem 'simplecov', :require => false
 end
 
 # PRODUCTION

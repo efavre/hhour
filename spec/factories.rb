@@ -23,6 +23,16 @@ FactoryGirl.define do
     title "My Challenge"
     lasting_time_type "s"
     author
+
+    factory :challenge_with_pictures do
+      transient do
+        pictures_count 1
+      end
+      after(:create) do |challenge, evaluator|
+        create_list(:picture, evaluator.pictures_count, challenge: challenge)
+      end
+    end
+
   end
 
   factory :device do
