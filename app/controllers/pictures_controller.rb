@@ -17,7 +17,7 @@ class PicturesController < ApplicationController
 
 	#  curl --data "picture[url]=http://test.com/image.jpeg&picture[author]=hodor" http://rails.efa.local/challenges/1/pictures.json 
 	def create
-		if params[:challenge_id] && Challenge.where(id:params[:challenge_id])
+		if params[:challenge_id] && Challenge.where(id:params[:challenge_id]).any?
 			@challenge = Challenge.find(params[:challenge_id])
 
 			if params[:picture] && params[:picture][:author] && params[:picture][:file_key]
