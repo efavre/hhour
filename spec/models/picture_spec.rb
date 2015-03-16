@@ -12,7 +12,7 @@ RSpec.describe Picture do
 
   end
 
-  context "Picture created before challenge closes" do 
+  context "Picture created after challenge closes" do 
 
     it "is not valid" do
       challenge = FactoryGirl.create(:challenge)
