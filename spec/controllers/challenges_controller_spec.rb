@@ -121,4 +121,76 @@ RSpec.describe ChallengesController, type: :controller do
 
   end
 
+  context "#check_params" do
+
+    before(:each) do
+      ChallengesController.send(:public, *ChallengesController.protected_instance_methods)  
+    end
+    
+    context "with 1 existing param" do
+      it "should return true" do
+        provided_params = {key:"value"}
+        expected_params = [:key]
+        expect(@controller.check_params(provided_params, expected_params)).to be(true)
+      end
+    end
+
+    context "with 1 unexisting param" do
+      it "should return false" do
+        provided_params = {key:"value"}
+        expected_params = [:unexisting_key]
+        expect(@controller.check_params(provided_params, expected_params)).to be(false)
+      end
+    end
+
+    context "with 2 existing param" do
+      it "should return true" do
+        provided_params = {key1:"value", key2:"value"}
+        expected_params = [:key1, :key2]
+        expect(@controller.check_params(provided_params, expected_params)).to be(true)
+      end
+    end
+
+    context "with 2 unexisting param" do
+      it "should return false" do
+        provided_params = {key1:"value", key2:"value"}
+        expected_params = [:key, :unexisting_key]
+        expect(@controller.check_params(provided_params, expected_params)).to be(false)
+      end
+    end
+
+    context "with 3 existing params on 2 levels depth" do
+      it "should return true" do
+        provided_params = {key1:"value", key2:{key3:"value", key4:"value"}}
+        expected_params = [:key1, {key2:[:key3, :key4]}]
+        expect(@controller.check_params(provided_params, expected_params)).to be(true)
+      end
+    end
+
+    context "with unexisting params on 2 levels depth" do
+      it "should return false" do
+        provided_params = {key1:"value", key2:{key3:"value", key4:"value"}}
+        expected_params = [:key1, {key2:[:unexisting_key]}]
+        expect(@controller.check_params(provided_params, expected_params)).to be(false)
+      end
+    end
+
+    context "with 3 existing params on 3 levels depth" do
+      it "should return true" do
+        provided_params = {key1:"value", key2:{key3:{key5:"value", key6:"value"}, key7:"value"}}
+        expected_params = [:key1, {key2:[{key3:[:key5,:key6]}]},:key7]
+        expect(@controller.check_params(provided_params, expected_params)).to be(true)
+      end
+    end
+
+    context "with unexisting params on 3 levels depth" do
+      it "should return false" do
+        provided_params = {key1:"value", key2:{key3:{key4:"value", key5:"value"}, key6:"value"}}
+        expected_params = [:key1, {key2:[{key3:[:key4, :unexisting_key]}]}]
+        expect(@controller.check_params(provided_params, expected_params)).to be(false)
+      end
+    end
+
+  end
+
 end

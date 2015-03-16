@@ -11,7 +11,7 @@ class ChallengesController < ApplicationController
 	end
 
 	def create
-		if params[:challenge] && params[:challenge][:author] && params[:challenge][:title] && params[:challenge][:lasting_time] && params[:challenge][:picture][:file_key]
+		if params.has_key?(:challenge) && params[:challenge].has_key?(:author) && params[:challenge].has_key?(:title) && params[:challenge].has_key?(:lasting_time) && params[:challenge].has_key?(:picture) && params[:challenge][:picture].has_key?(:file_key)
 			author = User.find_or_create_by(first_name: params[:challenge][:author])
 			challenge = Challenge.new(title: params[:challenge][:title], author: author, lasting_time_type: params[:challenge][:lasting_time])
 			challenge.save
