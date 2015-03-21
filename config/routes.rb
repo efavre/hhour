@@ -4,7 +4,12 @@ Rails.application.routes.draw do
   ActiveAdmin.routes(self)
 
   resources :devices
-  resources :users
+  resources :users do 
+    collection do
+      post 'authenticate'
+    end
+  end
+
   resources :challenges do 
     resources :pictures
   end

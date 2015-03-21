@@ -1,4 +1,7 @@
-FactoryGirl.define do
+FactoryGirl.define do  factory :facebook_connector do
+    
+  end
+
   
   factory :user, aliases: [:author] do
     first_name "John"

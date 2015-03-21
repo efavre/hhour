@@ -16,4 +16,17 @@ class UsersController < ApplicationController
     end
 	end
 
+  def authenticate
+    if params.has_key?(:user) && params[:user].has_key?(:facebook_id) && params[:user].has_key?(:facebook_token)
+      @user = User.authenticate(params[:user][:facebook_id], params[:user][:facebook_token])
+      if @user
+        render json: {message:"user authenticated"}, status:200
+      else
+        render json: {message:"unauthorized"}, status:401
+      end
+    else
+      render json: {message:"missing parameters"}, status:400
+    end
+  end
+
 end

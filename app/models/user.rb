@@ -10,4 +10,15 @@ class User < ActiveRecord::Base
 	def display_name 
 		first_name
 	end
+
+  def self.authenticate(facebook_id, facebook_token)
+    if FacebookConnector.check_access_token(facebook_token)
+      user = User.find_or_create_by(facebook_id:facebook_id)
+      user.update_attribute(:facebook_token,facebook_token)
+      return user
+    else
+      return nil
+    end
+  end
+
 end
