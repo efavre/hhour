@@ -1,7 +1,4 @@
-FactoryGirl.define do  factory :facebook_connector do
-    
-  end
-
+FactoryGirl.define do  
   
   factory :user, aliases: [:author] do
     first_name "John"
@@ -14,6 +11,11 @@ FactoryGirl.define do  factory :facebook_connector do
         create_list(:device, evaluator.devices_count, user: user)
       end
     end
+
+    factory :user_authenticated do
+      access_token "VALID_ACCESS_TOKEN"
+    end
+
   end
 
   factory :picture do

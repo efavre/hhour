@@ -12,13 +12,21 @@ class User < ActiveRecord::Base
 	end
 
   def self.authenticate(facebook_id, facebook_token)
-    if FacebookConnector.check_access_token(facebook_token)
-      user = User.find_or_create_by(facebook_id:facebook_id)
-      user.update_attribute(:facebook_token,facebook_token)
+    user = User.find_or_create_by(facebook_id:facebook_id)
+    if FacebookConnector.check_access_token(facebook_id, facebook_token)
+      user.update_attribute(:facebook_token, facebook_token)
+      user.generate_access_token
       return user
     else
+      user.update_attribute(:facebook_token, nil)
       return nil
     end
+  end
+  
+  def generate_access_token
+    begin
+      self.access_token = SecureRandom.hex
+    end while self.class.exists?(access_token: access_token)
   end
 
 end

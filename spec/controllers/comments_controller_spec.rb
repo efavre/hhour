@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe CommentsController, type: :controller do
+  
+  before(:each) do
+    user_authenticated = FactoryGirl.create(:user_authenticated)
+    @request.headers["Authorization"] = "Token token=#{user_authenticated.access_token}"    
+  end
 
   describe "GET #index" do
 

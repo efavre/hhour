@@ -1,7 +1,7 @@
 class ApplicationController < ActionController::Base  
 
   protect_from_forgery with: :exception
-  before_filter :accept_json_only
+  before_filter :accept_json_only, :restrict_access
 
   protected
 
@@ -30,5 +30,10 @@ class ApplicationController < ActionController::Base
     return true        
   end
   
+  def restrict_access
+    authenticate_or_request_with_http_token do |token, options|
+      User.exists?(access_token: token)
+    end
+  end
 
 end

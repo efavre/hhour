@@ -58,14 +58,9 @@ RSpec.describe UsersController, type: :controller do
         expect(response).to have_http_status(200)
       end
 
-      it "returns user created message" do
-        post :create, user: {first_name:"John"}, format:"json"
-        expect(response.body).to match(/user created/)
-      end
-
       it "creates user" do
         users_count = User.count
-        post :create, user: {first_name:"John"}, format:"json"
+        post :create, user: {first_name:"Johnny"}, format:"json"
         expect(User.count).to eq(users_count + 1)
       end
     end
@@ -74,11 +69,6 @@ RSpec.describe UsersController, type: :controller do
       it "returns 200" do
         post :create, user: {first_name:"John", facebook_id:"myFacebookId"}, format:"json"
         expect(response).to have_http_status(200)
-      end
-
-      it "returns user created message" do
-        post :create, user: {first_name:"John", facebook_id:"myFacebookId"}, format:"json"
-        expect(response.body).to match(/user created/)
       end
 
       it "creates user" do
@@ -126,32 +116,20 @@ RSpec.describe UsersController, type: :controller do
         expect(response).to have_http_status(200)
       end
 
-      it "renders user authenticated message" do
-        allow(FacebookConnector).to receive(:check_access_token).and_return(true)
-        post :authenticate, user:{facebook_id:"myFacebookId", facebook_token:"VALID_ACCESS_TOKEN"}, format:"json"
-        expect(response.body).to match(/user authenticated/)
-      end
-
     end
 
     context "with invalid user" do
 
       it "authenticates user" do
         allow(FacebookConnector).to receive(:check_access_token).and_return(false)
-        post :authenticate, user:{facebook_id:"myFacebookId", facebook_token:"VALID_ACCESS_TOKEN"}, format:"json"
+        post :authenticate, user:{facebook_id:"myFacebookId", facebook_token:"INVALID_ACCESS_TOKEN"}, format:"json"
         expect(assigns(:user)).to be(nil)
       end
 
       it "renders 200" do
         allow(FacebookConnector).to receive(:check_access_token).and_return(false)
-        post :authenticate, user:{facebook_id:"myFacebookId", facebook_token:"VALID_ACCESS_TOKEN"}, format:"json"
+        post :authenticate, user:{facebook_id:"myFacebookId", facebook_token:"INVALID_ACCESS_TOKEN"}, format:"json"
         expect(response).to have_http_status(401)
-      end
-
-      it "renders user authenticated message" do
-        allow(FacebookConnector).to receive(:check_access_token).and_return(false)
-        post :authenticate, user:{facebook_id:"myFacebookId", facebook_token:"VALID_ACCESS_TOKEN"}, format:"json"
-        expect(response.body).to match(/unauthorized/)
       end
 
     end

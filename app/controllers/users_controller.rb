@@ -1,6 +1,7 @@
 class UsersController < ApplicationController
 
 	protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
+  skip_before_filter :restrict_access
 
 	def create
     if params.has_key?(:user) && params[:user].has_key?(:first_name)
@@ -10,7 +11,7 @@ class UsersController < ApplicationController
         user = User.find_or_create_by(first_name: params[:user][:first_name])
       end
       Device.find_or_create_by(:token => params[:user][:token], :user => user)
-      render json: {message:"user created"}, status:200
+      head 200
     else
       render json: {message:"missing parameters"}, status:400
     end
@@ -20,9 +21,9 @@ class UsersController < ApplicationController
     if params.has_key?(:user) && params[:user].has_key?(:facebook_id) && params[:user].has_key?(:facebook_token)
       @user = User.authenticate(params[:user][:facebook_id], params[:user][:facebook_token])
       if @user
-        render json: {message:"user authenticated"}, status:200
+        head 200
       else
-        render json: {message:"unauthorized"}, status:401
+        head 401
       end
     else
       render json: {message:"missing parameters"}, status:400

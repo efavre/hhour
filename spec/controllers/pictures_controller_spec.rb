@@ -2,6 +2,11 @@ require 'rails_helper'
 
 RSpec.describe PicturesController, type: :controller do
 
+  before(:each) do
+    user_authenticated = FactoryGirl.create(:user_authenticated)
+    @request.headers["Authorization"] = "Token token=#{user_authenticated.access_token}"    
+  end
+  
   describe "GET #index" do
 
     context "without challenge" do
