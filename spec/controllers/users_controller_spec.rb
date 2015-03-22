@@ -110,10 +110,17 @@ RSpec.describe UsersController, type: :controller do
         expect(assigns(:user).access_token).to_not be(nil)
       end
 
-      it "renders 200" do
+      it "return 200" do
         allow(FacebookConnector).to receive(:check_access_token).and_return(true)
         post :authenticate, user:{facebook_id:"myFacebookId", facebook_token:"VALID_ACCESS_TOKEN"}, format:"json"
         expect(response).to have_http_status(200)
+      end
+
+      it "renders token" do
+        allow(FacebookConnector).to receive(:check_access_token).and_return(true)
+        post :authenticate, user:{facebook_id:"myFacebookId", facebook_token:"VALID_ACCESS_TOKEN"}, format:"json"
+        user = assigns(:user)
+        expect(response.body).to match(/\"token\":\"#{user.access_token}\"/)
       end
 
     end

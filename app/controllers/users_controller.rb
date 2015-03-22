@@ -21,7 +21,7 @@ class UsersController < ApplicationController
     if params.has_key?(:user) && params[:user].has_key?(:facebook_id) && params[:user].has_key?(:facebook_token)
       @user = User.authenticate(params[:user][:facebook_id], params[:user][:facebook_token])
       if @user
-        head 200
+        render json:{token:@user.access_token}, status: 200
       else
         head 401
       end

@@ -19,10 +19,11 @@ class User < ActiveRecord::Base
       return user
     else
       user.update_attribute(:facebook_token, nil)
+      user.update_attribute(:access_token, nil)
       return nil
     end
   end
-  
+    
   def generate_access_token
     begin
       self.access_token = SecureRandom.hex
