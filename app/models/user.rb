@@ -5,17 +5,17 @@ class User < ActiveRecord::Base
 	has_many :devices
 	has_and_belongs_to_many :challenges
 
-	validates :first_name, presence: true
+	validates :facebook_id, presence: true
 
 	def display_name 
-		first_name
+		try(:facebook_name)
 	end
 
   def self.authenticate(facebook_id, facebook_token)
     user = User.find_or_create_by(facebook_id:facebook_id)
     if FacebookConnector.check_access_token(facebook_id, facebook_token)
-      user.update_attribute(:facebook_token, facebook_token)
       user.generate_access_token
+      user.update_attribute(:facebook_token, facebook_token)
       return user
     else
       user.update_attribute(:facebook_token, nil)
@@ -23,7 +23,7 @@ class User < ActiveRecord::Base
       return nil
     end
   end
-    
+
   def generate_access_token
     begin
       self.access_token = SecureRandom.hex

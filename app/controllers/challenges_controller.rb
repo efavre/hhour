@@ -1,7 +1,5 @@
 class ChallengesController < ApplicationController
 
-	protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
-
 	def index
 		@challenges = Challenge.all.order("closing_date DESC").limit(15)
 		if params[:later_than]
@@ -11,11 +9,10 @@ class ChallengesController < ApplicationController
 	end
 
 	def create
-		if params.has_key?(:challenge) && params[:challenge].has_key?(:author) && params[:challenge].has_key?(:title) && params[:challenge].has_key?(:lasting_time) && params[:challenge].has_key?(:picture) && params[:challenge][:picture].has_key?(:file_key)
-			author = User.find_or_create_by(first_name: params[:challenge][:author])
-			challenge = Challenge.new(title: params[:challenge][:title], author: author, lasting_time_type: params[:challenge][:lasting_time])
+		if params.has_key?(:challenge) && params[:challenge].has_key?(:title) && params[:challenge].has_key?(:lasting_time) && params[:challenge].has_key?(:picture) && params[:challenge][:picture].has_key?(:file_key)
+			challenge = Challenge.new(title: params[:challenge][:title], author: @current_user, lasting_time_type: params[:challenge][:lasting_time])
 			challenge.save
-			challenge.pictures.create(file_key: params[:challenge][:picture][:file_key], author: author)
+			challenge.pictures.create(file_key: params[:challenge][:picture][:file_key], author: @current_user)
 			render action: :index, status:201
 		else
 			render json: { message: "missing parameters" }, status:400

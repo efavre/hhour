@@ -1,7 +1,8 @@
 FactoryGirl.define do  
   
   factory :user, aliases: [:author] do
-    first_name "John"
+    facebook_name "John Doe"
+    facebook_id "123456789"
 
     factory :user_with_devices do
       transient do
@@ -13,7 +14,7 @@ FactoryGirl.define do
     end
 
     factory :user_authenticated do
-      access_token "VALID_ACCESS_TOKEN"
+      sequence(:access_token) { |n| "VALID_ACCESS_TOKEN#{n}" }
     end
 
   end

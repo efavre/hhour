@@ -1,6 +1,8 @@
 class ApplicationController < ActionController::Base  
 
   protect_from_forgery with: :exception
+  protect_from_forgery with: :null_session, if: Proc.new { |c| c.request.format == 'application/json' }
+
   before_filter :accept_json_only, :restrict_access
 
   protected
@@ -32,7 +34,12 @@ class ApplicationController < ActionController::Base
   
   def restrict_access
     authenticate_or_request_with_http_token do |token, options|
-      User.exists?(access_token: token)
+      if User.exists?(access_token: token)
+        @current_user = User.find_by(access_token: token)
+        true
+      else
+        false
+      end
     end
   end
 
