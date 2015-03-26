@@ -7,8 +7,8 @@ RSpec.describe ChallengesController, type: :controller do
     context "with valid token" do
 
       before(:each) do
-        user_authenticated = FactoryGirl.create(:user_authenticated)
-        @request.headers["Authorization"] = "Token token=#{user_authenticated.access_token}"    
+        @user_authenticated = FactoryGirl.create(:user_authenticated)
+        @request.headers["Authorization"] = "Token token=#{@user_authenticated.access_token}"    
       end
 
       context "without challenges" do
@@ -24,69 +24,141 @@ RSpec.describe ChallengesController, type: :controller do
         end
       end
 
-      context "with one challenge" do
-        it "returns 200" do
-          challenge = FactoryGirl.create(:challenge)
-          get :index, format:"json"
-          expect(response).to have_http_status(200)
+      context "with current user not invited to challenge" do
+
+        context "with one challenge" do
+          it "returns 200" do
+            challenge = FactoryGirl.create(:challenge)
+            get :index, format:"json"
+            expect(response).to have_http_status(200)
+          end
+
+          it "assigns no item in array" do
+            challenge = FactoryGirl.create(:challenge)
+            get :index, format:"json"
+            expect(assigns[:challenges]).to match_array([])
+          end
         end
 
-        it "assigns one item in array" do
-          challenge = FactoryGirl.create(:challenge)
-          get :index, format:"json"
-          expect(assigns[:challenges]).to match_array([challenge])
+        context "with two challenges" do
+          it "returns 200" do
+            challenge1 = FactoryGirl.create(:challenge)
+            challenge2 = FactoryGirl.create(:challenge)
+            get :index, format:"json"
+            expect(response).to have_http_status(200)
+          end
+
+          it "assigns no items in array" do
+            challenge1 = FactoryGirl.create(:challenge)
+            challenge2 = FactoryGirl.create(:challenge)
+            get :index, format:"json"
+            expect(assigns[:challenges]).to match_array([])
+          end
+        end
+
+        context "with two challenges closing after param later_than" do
+          it "returns 200" do
+            challenge1 = FactoryGirl.create(:challenge)
+            challenge2 = FactoryGirl.create(:challenge)
+            get :index, later_than:"197001010101", format:"json"
+            expect(response).to have_http_status(200)
+          end
+
+          it "assigns no items in array" do
+            challenge1 = FactoryGirl.create(:challenge)
+            challenge2 = FactoryGirl.create(:challenge)
+            get :index, later_than:"197001010101", format:"json"
+            expect(assigns[:challenges]).to match_array([])
+          end      
+        end
+
+        context "with two challenges, one closing before param later_than" do
+          it "returns 200" do
+            challenge1 = FactoryGirl.create(:challenge, created_at:2.days.ago)
+            challenge2 = FactoryGirl.create(:challenge)
+            later_than = 1.day.ago.to_s(:number)
+            get :index, later_than:later_than, format:"json"
+            expect(response).to have_http_status(200)
+          end
+
+          it "assigns no items in array" do
+            challenge1 = FactoryGirl.create(:challenge, created_at:2.days.ago)
+            challenge2 = FactoryGirl.create(:challenge)
+            later_than = 1.day.ago.to_s(:number)
+            get :index, later_than:later_than, format:"json"
+            expect(assigns[:challenges]).to match_array([])
+          end
+        end
+
+      end
+
+      context "with current user invited to challenge" do
+
+       context "with two challenges" do
+          it "returns 200" do
+            challenge1 = FactoryGirl.create(:challenge)
+            challenge1.users << @user_authenticated
+            challenge2 = FactoryGirl.create(:challenge)
+            challenge2.users << @user_authenticated
+            get :index, format:"json"
+            expect(response).to have_http_status(200)
+          end
+
+          it "assigns two items in array" do
+            challenge1 = FactoryGirl.create(:challenge)
+            challenge1.users << @user_authenticated
+            challenge2 = FactoryGirl.create(:challenge)
+            challenge2.users << @user_authenticated
+            get :index, format:"json"
+            expect(assigns[:challenges]).to match_array([challenge1, challenge2])
+          end
+        end
+
+        context "with two challenges, one closing before param later_than" do
+          it "returns 200" do
+            challenge1 = FactoryGirl.create(:challenge, created_at:2.days.ago)
+            challenge1.users << @user_authenticated
+            challenge2 = FactoryGirl.create(:challenge)
+            challenge2.users << @user_authenticated
+            later_than = 1.day.ago.to_s(:number)
+            get :index, later_than:later_than, format:"json"
+            expect(response).to have_http_status(200)
+          end
+
+          it "assigns one items in array" do
+            challenge1 = FactoryGirl.create(:challenge, created_at:2.days.ago)
+            challenge1.users << @user_authenticated
+            challenge2 = FactoryGirl.create(:challenge)
+            challenge2.users << @user_authenticated
+            later_than = 1.day.ago.to_s(:number)
+            get :index, later_than:later_than, format:"json"
+            expect(assigns[:challenges]).to match_array([challenge2])
+          end
         end
       end
 
-      context "with two challenges" do
-        it "returns 200" do
-          challenge1 = FactoryGirl.create(:challenge)
-          challenge2 = FactoryGirl.create(:challenge)
-          get :index, format:"json"
-          expect(response).to have_http_status(200)
-        end
 
-        it "assigns two items in array" do
-          challenge1 = FactoryGirl.create(:challenge)
-          challenge2 = FactoryGirl.create(:challenge)
-          get :index, format:"json"
-          expect(assigns[:challenges]).to match_array([challenge1, challenge2])
-        end
-      end
+      context "with current user invited to only one challenge" do
 
-      context "with two challenges closing after param later_than" do
-        it "returns 200" do
-          challenge1 = FactoryGirl.create(:challenge)
-          challenge2 = FactoryGirl.create(:challenge)
-          get :index, later_than:"197001010101", format:"json"
-          expect(response).to have_http_status(200)
-        end
+       context "with two challenges" do
+          it "returns 200" do
+            challenge1 = FactoryGirl.create(:challenge)
+            challenge1.users << @user_authenticated
+            challenge2 = FactoryGirl.create(:challenge)
+            get :index, format:"json"
+            expect(response).to have_http_status(200)
+          end
 
-        it "assigns two items in array" do
-          challenge1 = FactoryGirl.create(:challenge)
-          challenge2 = FactoryGirl.create(:challenge)
-          get :index, later_than:"197001010101", format:"json"
-          expect(assigns[:challenges]).to match_array([challenge1, challenge2])
-        end      
-      end
-
-      context "with two challenges closing before param later_than" do
-        it "returns 200" do
-          challenge1 = FactoryGirl.create(:challenge, created_at:2.days.ago)
-          challenge2 = FactoryGirl.create(:challenge)
-          later_than = 1.day.ago.to_s(:number)
-          get :index, later_than:later_than, format:"json"
-          expect(response).to have_http_status(200)
-        end
-
-        it "assigns one items in array" do
-          challenge1 = FactoryGirl.create(:challenge, created_at:2.days.ago)
-          challenge2 = FactoryGirl.create(:challenge)
-          later_than = 1.day.ago.to_s(:number)
-          get :index, later_than:later_than, format:"json"
-          expect(assigns[:challenges]).to match_array([challenge2])
+          it "assigns no items in array" do
+            challenge1 = FactoryGirl.create(:challenge)
+            challenge1.users << @user_authenticated
+            challenge2 = FactoryGirl.create(:challenge)
+            get :index, format:"json"
+            expect(assigns[:challenges]).to match_array([challenge1])
+          end
         end
       end
+
     end
 
     context "without valid token" do
@@ -104,8 +176,8 @@ RSpec.describe ChallengesController, type: :controller do
 
   describe "POST #create" do
     before(:each) do
-      user_authenticated = FactoryGirl.create(:user_authenticated)
-      @request.headers["Authorization"] = "Token token=#{user_authenticated.access_token}"    
+      @user_authenticated = FactoryGirl.create(:user_authenticated)
+      @request.headers["Authorization"] = "Token token=#{@user_authenticated.access_token}"    
     end
     
     context "with no parameters" do
@@ -131,16 +203,48 @@ RSpec.describe ChallengesController, type: :controller do
       end      
     end
 
-    context "with challenge full parameters" do
+    context "with challenge parameters" do
       it "returns 201" do
-        post :create, challenge: {author:"John",title:"My Challenging Challenge", lasting_time:"m", picture:{file_key:"filekey123"}}, format:"json"
+        post :create, challenge: {title:"My Challenging Challenge", lasting_time:"m", picture:{file_key:"filekey123"}}, format:"json"
         expect(response).to have_http_status(201)
       end
       it "creates challenge" do
         challenge_count = Challenge.count
-        post :create, challenge: {author:"John",title:"My Challenging Challenge", lasting_time:"m", picture:{file_key:"filekey123"}}, format:"json"
+        post :create, challenge: {title:"My Challenging Challenge", lasting_time:"m", picture:{file_key:"filekey123"}}, format:"json"
         expect(Challenge.count).to eq(challenge_count + 1)
       end
+    end
+
+    context "with challenge and challengers parameters" do
+
+      before(:each) do
+        @challenger1 = FactoryGirl.create(:user_authenticated, facebook_id:"FACEBOOK_ID_CHALLENGER1")
+        @challenger2 = FactoryGirl.create(:user_authenticated, facebook_id:"FACEBOOK_ID_CHALLENGER2")
+      end
+
+      it "returns 201" do
+        post :create, challengers:[@challenger1.facebook_id, @challenger2.facebook_id], challenge: {title:"My Challenging Challenge", lasting_time:"m", picture:{file_key:"filekey123"}}, format:"json"
+        expect(response).to have_http_status(201)
+      end
+      
+      it "creates challenge" do
+        challenge_count = Challenge.count
+        post :create, challengers:[@challenger1.facebook_id, @challenger2.facebook_id], challenge: {title:"My Challenging Challenge", lasting_time:"m", picture:{file_key:"filekey123"}}, format:"json"
+        expect(Challenge.count).to eq(challenge_count + 1)
+      end
+
+      it "adds author to challenged users" do
+        post :create, challengers:[@challenger1.facebook_id, @challenger2.facebook_id], challenge: {title:"My Challenging Challenge", lasting_time:"m", picture:{file_key:"filekey123"}}, format:"json"
+        challenge = Challenge.last
+        expect(challenge.users).to include(@user_authenticated)
+      end
+
+      it "invites challenged users" do
+        post :create, challengers:[@challenger1.facebook_id, @challenger2.facebook_id], challenge: {title:"My Challenging Challenge", lasting_time:"m", picture:{file_key:"filekey123"}}, format:"json"
+        challenge = Challenge.last
+        expect(challenge.users).to match_array([@user_authenticated, @challenger1, @challenger2]) 
+      end
+      
     end
 
   end

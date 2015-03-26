@@ -6,7 +6,7 @@ class PicturesController < ApplicationController
 			@pictures = @challenge.pictures
 			if params.has_key?(:later_than)
 				later_than_date = params[:later_than].to_datetime
-				@pictures = @challenge.pictures.where("created_at > ?",later_than_date)
+				@pictures = @challenge.pictures.where("pictures.created_at > ?",later_than_date)
 			end
 		else
 			render json: { message: "missing parameters" }, status:400

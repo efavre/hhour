@@ -184,14 +184,14 @@ RSpec.describe PicturesController, type: :controller do
         it "returns 201" do
           challenge = FactoryGirl.create(:challenge)
           pictures_count = challenge.reload.pictures.count
-          post :create, challenge_id:challenge.id, picture:{author:"John", file_key:"filekey123AZE"},format:"json"
+          post :create, challenge_id:challenge.id, picture:{file_key:"filekey123AZE"},format:"json"
           expect(response).to have_http_status(201)
         end
 
         it "adds picture to challenge" do
           challenge = FactoryGirl.create(:challenge)
           pictures_count = challenge.reload.pictures.count
-          post :create, challenge_id:challenge.id, picture:{author:"John", file_key:"filekey123AZE"},format:"json"
+          post :create, challenge_id:challenge.id, picture:{file_key:"filekey123AZE"},format:"json"
           expect(challenge.reload.pictures.count).to eq(pictures_count + 1)
         end
       end
