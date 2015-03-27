@@ -18,8 +18,8 @@ class ChallengesController < ApplicationController
 					challenger = User.find_by(facebook_id: challenger_facebook_id)
 					challenge.users << challenger if challenger
 				end
+				challenge.notify
 			end
-			challenge.notify
 			render action: :index, status:201
 		else
 			render json: { message: "missing parameters" }, status:400

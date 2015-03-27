@@ -30,7 +30,7 @@ class Challenge < ActiveRecord::Base
 	def get_devices_to_notify
 		devices = []
 		self.users.each do |user|
-			devices << user.devices
+			devices << user.devices unless user == author
 		end
 		devices.flatten.uniq
 	end
