@@ -3,7 +3,7 @@ class Challenge < ActiveRecord::Base
 	has_many :pictures
 	belongs_to :author, class_name: "User"
 	has_and_belongs_to_many :users
-	after_create :set_closing_date, :notify
+	after_create :set_closing_date
 	validates :title, presence: true
 	validates :author, presence: true
 
@@ -24,7 +24,11 @@ class Challenge < ActiveRecord::Base
 		elsif self.is_minute_challenge?
 			message = "#{self.author.display_name} vous lance le défi #{self.title} ! On ramasse les copies dans une heure." 
 		end
-		PushNotification.notify_message_to_devices(message, Device.all)
+		devices = []
+		self.users.each do |user|
+			devices << user.devices
+		end
+		PushNotification.notify_message_to_devices(message, devices.flatten.uniq)
 	end
 
 	def is_hour_challenge?

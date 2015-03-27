@@ -19,6 +19,7 @@ class ChallengesController < ApplicationController
 					challenge.users << challenger if challenger
 				end
 			end
+			challenge.notify
 			render action: :index, status:201
 		else
 			render json: { message: "missing parameters" }, status:400

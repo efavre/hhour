@@ -59,11 +59,12 @@ RSpec.describe Challenge do
   context "creating new challenge" do
 
     it "notifies users" do
-      device1 = FactoryGirl.create(:device)
-      device2 = FactoryGirl.create(:device)
-      challenge = FactoryGirl.build(:challenge)
-      expect(PushNotification).to receive(:notify_message_to_devices).with("Vite ! Une minute pour répondre au défi de #{challenge.author.display_name} : #{challenge.title} !", [device1, device2])
-      challenge.save
+      user_with_devices1 = FactoryGirl.create(:user_with_devices)
+      user_with_devices2 = FactoryGirl.create(:user_with_devices)
+      challenge = FactoryGirl.create(:challenge)
+      challenge.users = [user_with_devices1, user_with_devices2]
+      expect(PushNotification).to receive(:notify_message_to_devices).with("Vite ! Une minute pour répondre au défi de #{challenge.author.display_name} : #{challenge.title} !", [user_with_devices1.devices.first, user_with_devices2.devices.first])
+      challenge.notify
     end
 
   end
