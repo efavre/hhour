@@ -29,7 +29,7 @@ class Picture < ActiveRecord::Base
 
 	def notify_other_challengers
 		message = "#{self.author.display_name} a répondu au challenge #{self.challenge.title}"
-		PushNotification.notify_message_to_devices(message, Device.all)
+		PushNotification.notify_message_to_devices(message, self.challenge.get_devices_to_notify)
 	end
 
 	def get_as3_url

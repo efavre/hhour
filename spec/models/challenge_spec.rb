@@ -69,4 +69,53 @@ RSpec.describe Challenge do
 
   end
 
+  context ".get_devices_to_notify" do
+    context "one user with no device" do
+      it "returns empty array" do
+        user = FactoryGirl.create(:user)
+        challenge = FactoryGirl.create(:challenge)
+        challenge.users = [user]
+        expect(challenge.get_devices_to_notify).to eq([])
+      end
+    end
+
+    context "one user with one device" do
+      it "returns array with one device" do
+        user = FactoryGirl.create(:user_with_devices)
+        challenge = FactoryGirl.create(:challenge)
+        challenge.users = [user]
+        expect(challenge.get_devices_to_notify).to eq(user.devices)
+      end
+    end
+
+    context "one user with two devices" do
+      it "returns array with two devices" do
+        user = FactoryGirl.create(:user_with_devices)
+        challenge = FactoryGirl.create(:challenge)
+        challenge.users = [user]
+        expect(challenge.get_devices_to_notify).to eq(user.devices)
+      end
+    end
+
+    context "two users with one device each" do
+      it "returns array with two devices" do
+        user1 = FactoryGirl.create(:user_with_devices)
+        user2 = FactoryGirl.create(:user_with_devices)
+        challenge = FactoryGirl.create(:challenge)
+        challenge.users = [user1, user2]
+        expect(challenge.get_devices_to_notify).to match_array([user1.devices, user2.devices].flatten)
+      end
+    end
+
+    context "two users with two devices each" do
+      it "returns array with four devices" do
+        user1 = FactoryGirl.create(:user_with_devices, devices_count:2)
+        user2 = FactoryGirl.create(:user_with_devices, devices_count:2)
+        challenge = FactoryGirl.create(:challenge)
+        challenge.users = [user1, user2]
+        expect(challenge.get_devices_to_notify).to match_array([user1.devices, user2.devices].flatten)
+      end
+    end
+  end
+
 end

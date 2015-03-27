@@ -54,14 +54,14 @@ RSpec.describe Picture do
   context "creating new challenge" do
 
     it "notifies users" do
-
+      user_with_devices1 = FactoryGirl.create(:user_with_devices)
+      user_with_devices2 = FactoryGirl.create(:user_with_devices)
       challenge = FactoryGirl.create(:challenge)
-      device1 = FactoryGirl.create(:device)
-      device2 = FactoryGirl.create(:device)
-      picture1 = FactoryGirl.create(:picture, author:device1.user, challenge:challenge)
-      picture2 = FactoryGirl.build(:picture, author:device2.user, challenge:challenge)
+      challenge.users = [user_with_devices1, user_with_devices2]
+      picture1 = FactoryGirl.create(:picture, author:user_with_devices1, challenge:challenge)
+      picture2 = FactoryGirl.build(:picture, author:user_with_devices2, challenge:challenge)
 
-      expect(PushNotification).to receive(:notify_message_to_devices).with("#{picture2.author.display_name} a répondu au challenge #{challenge.title}", [device1, device2])
+      expect(PushNotification).to receive(:notify_message_to_devices).with("#{picture2.author.display_name} a répondu au challenge #{challenge.title}", [user_with_devices1.devices.first, user_with_devices2.devices.first])
       picture2.save
     end
 

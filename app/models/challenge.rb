@@ -24,11 +24,15 @@ class Challenge < ActiveRecord::Base
 		elsif self.is_minute_challenge?
 			message = "#{self.author.display_name} vous lance le défi #{self.title} ! On ramasse les copies dans une heure." 
 		end
+		PushNotification.notify_message_to_devices(message, get_devices_to_notify)
+	end
+
+	def get_devices_to_notify
 		devices = []
 		self.users.each do |user|
 			devices << user.devices
 		end
-		PushNotification.notify_message_to_devices(message, devices.flatten.uniq)
+		devices.flatten.uniq
 	end
 
 	def is_hour_challenge?
